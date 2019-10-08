@@ -46,33 +46,60 @@ def log_likelihood(theta,X,Y_true):
     logL = float(np.sum(log_likelihood)/(2*m))
     return logL
 
+
+
 def onehotEncoder(array,k_class):
+
+    '''
+    @array -  encoded array
+    @k_class - number of unique classes in array
+    '''
+    #to ensure the type of input is one dimensional array
     if(type(array)==list):
         array = np.array(array)
     assert len(array.shape)==1
+
+    #initializing (m,k_classes) array as one hot encoded array
     onehotencoded = np.zeros((array.shape[0],k_class))
     array = array.reshape((array.shape[0],))
+
+    #loop for each data point in array
     for i in range(array.shape[0]):
         onehotencoded[i,array[i]-1] = 1
     return onehotencoded
 
 def decode(array,mapping):
+
+    '''
+        @mapping- python dict where keys and values and encoded and true values respectively
+        @array - encoded array
+    '''
+    #convert to list type
     array_list = array.tolist()
-    print(array.shape)
     for i in range(array.shape[0]):
         array_list[i] = mapping[array[i]-1]
     return np.array(array_list)
 
 def encoder(array,unique_classes):
+
+    '''
+        @array -  input categorical feature which is to be encoded 
+        @unique_classes -  input list of unique classes in array
+    '''
     array = array.reshape((array.shape[0],))
+
+    #initializing a ditionary to store mapping of true classes to encoded value
     mapping={}
     for i in range(len(unique_classes)):
         mapping[unique_classes[i]]=i+1
+
+    #encoding
     for j in range(array.shape[0]):
         if(array[j] not in list(mapping.keys())):
             array[j] = None
         else:
             array[j] = list(mapping.keys()).index(array[j])+1
+    #returning encoded array
     return array.reshape((array.shape[0],))
 
 def read_inputs(trainFile,testFile):
